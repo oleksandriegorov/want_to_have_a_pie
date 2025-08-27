@@ -1,13 +1,17 @@
+import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 from want_to_have_a_pie.tools.vision_tool import VisionTool
+from crewai_tools import SerperDevTool
+
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
+os.environ["SERPER_API_KEY"] = "6225536b3c03c6e8084b903906c5bfb3d78d6be8" # serper.dev API key
 
 @CrewBase
 class WantToHaveAPie:
@@ -32,6 +36,16 @@ class WantToHaveAPie:
             max_iter=3,
         )
 
+    @agent
+    def recipe_hunter(self) -> Agent:
+        return Agent(
+            config=self.agents_config["recipe_hunter"],  # type: ignore[index]
+            verbose=True,
+            tools=[SerperDevTool()],  # Use CrewAI's search tool
+            # llm="gpt-4o-mini",  # Use vision-capable model
+            max_iter=3,
+        )
+
     # @agent
     # def reporting_analyst(self) -> Agent:
     #     return Agent(
@@ -46,6 +60,12 @@ class WantToHaveAPie:
     def food_estimation_task(self) -> Task:
         return Task(
             config=self.tasks_config["food_estimation_task"],  # type: ignore[index]
+        )
+
+    @task
+    def find_recipe_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["find_recipe_task"],  # type: ignore[index]
         )
 
     # @task
