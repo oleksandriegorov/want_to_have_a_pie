@@ -74,6 +74,16 @@ class WantToHaveAPie:
             verbose=True,
             tools=[scrape_tool],  # Add our custom vision tool
             llm="gpt-4.1-mini",  # Use vision-capable model
+            max_iter=3
+        )
+
+    @agent
+    def html_formatter(self) -> Agent:
+        return Agent(
+            config=self.agents_config["html_formatter"],  # type: ignore[index]
+            verbose=True,
+            tools=[scrape_tool],  # Add search tool for finding recipe images
+            llm="gpt-4.1-mini",  # Use GPT-4o-mini for HTML generation
             max_iter=3,
         )
 
@@ -102,7 +112,14 @@ class WantToHaveAPie:
     @task
     def find_ingredients_task(self) -> Task:
         return Task(
-            config=self.tasks_config["find_ingredients_task"],  # type: ignore[index]
+            config=self.tasks_config["find_ingredients_task"],  # type: ignore[index],
+        )
+
+    @task
+    def html_format_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["html_format_task"],  # type: ignore[index]
+            output_file='recipe_recommendations.html'
         )
 
     # @task

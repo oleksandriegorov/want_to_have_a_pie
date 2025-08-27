@@ -46,6 +46,41 @@ find_ingredients_task:
         - <ingredient>: <amount> [NEED MORE] acquire <X> more.
   agent: choose_recipe_and_ingredients
 
+html_format_task:
+  description: >
+    Create a beautiful HTML document that presents the complete food analysis and recipe recommendations.
+    Use the context from all previous tasks to generate a comprehensive HTML report that includes:
+    
+    1. **Food Analysis Section**: Display identified food items with images and confidence scores
+    2. **Recipe Recommendations**: Present the top 3 recipes with:
+       - Recipe images (search for and embed appropriate food images)
+       - Recipe titles and descriptions
+       - Complete ingredient lists
+       - Available vs missing ingredients breakdown
+       - Shopping lists with quantities
+    3. **Summary Section**: Overall recommendations and next steps
+    
+    Requirements for the HTML:
+    - Modern, responsive design with clean CSS styling
+    - Embedded recipe images (search for appropriate images for each recipe)
+    - Color-coded ingredient status (green for available, red for missing)
+    - Make sure that amount of ingredient is enough: if <amount> is less than <required>, mark as [NEED MORE] and advise on how much to acquire.
+    - Be accurate as what ingredients were available originally - if an ingredient was not available at the start, it should be marked as [NEED MORE] regardless of any subsequent analysis.
+    - Professional typography and layout
+    - Save the final HTML to 'recipe_recommendations.html'
+    
+    Find and embed high-quality food images for each recipe to make the report visually appealing.
+  expected_output: >
+    A complete HTML file saved as 'recipe_recommendations.html' containing:
+    - Beautiful visual presentation of food analysis results
+    - Recipe cards with embedded images
+    - Color-coded ingredient availability
+    - Professional styling and responsive design
+    - Clear shopping recommendations
+    The HTML should be ready to open in any web browser for immediate use.
+  agent: html_formatter
+  output_file: 'recipe_recommendations.html'
+
 
 # reporting_task:
 #   description: >
