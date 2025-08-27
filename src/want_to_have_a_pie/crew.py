@@ -5,13 +5,34 @@ from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 from want_to_have_a_pie.tools.vision_tool import VisionTool
 from crewai_tools import SerperDevTool
+from crewai_tools import FirecrawlScrapeWebsiteTool
 
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
-os.environ["SERPER_API_KEY"] = "6225536b3c03c6e8084b903906c5bfb3d78d6be8" # serper.dev API key
+os.environ["SERPER_API_KEY"] = (
+    "6225536b3c03c6e8084b903906c5bfb3d78d6be8"  # serper.dev API key
+)
+os.environ["FIRECRAWL_API_KEY"] = "fc-05084f080afb43d3aff255a0e0a9fc83"
+
+# Initialize the Firecrawl tool without a specific URL
+# This allows the agent to scrape any URL provided in the task context
+scrape_tool = FirecrawlScrapeWebsiteTool(
+    # No url parameter - agent will specify URLs dynamically
+    api_key=os.getenv("FIRECRAWL_API_KEY"),  # Optional if set in env
+    page_options={
+        "onlyMainContent": True,  # Get clean content without headers/footers
+        "includeHtml": False,  # Return markdown only
+    },
+    extractor_options={
+        "mode": "llm-extraction",  # Use AI extraction for better results
+        "extractionPrompt": "Extract the main content, key information, and important details from this webpage",
+    },
+    timeout=30000,  # 30 second timeout
+)
+
 
 @CrewBase
 class WantToHaveAPie:
@@ -46,6 +67,16 @@ class WantToHaveAPie:
             max_iter=3,
         )
 
+    @agent
+    def choose_recipe_and_ingredients(self) -> Agent:
+        return Agent(
+            config=self.agents_config["choose_recipe_and_ingredients"],  # type: ignore[index]
+            verbose=True,
+            tools=[scrape_tool],  # Add our custom vision tool
+            llm="gpt-4.1-mini",  # Use vision-capable model
+            max_iter=3,
+        )
+
     # @agent
     # def reporting_analyst(self) -> Agent:
     #     return Agent(
@@ -66,6 +97,12 @@ class WantToHaveAPie:
     def find_recipe_task(self) -> Task:
         return Task(
             config=self.tasks_config["find_recipe_task"],  # type: ignore[index]
+        )
+
+    @task
+    def find_ingredients_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["find_ingredients_task"],  # type: ignore[index]
         )
 
     # @task

@@ -26,6 +26,26 @@ find_recipe_task:
     5. Recipe Name (URL)
   agent: recipe_hunter
 
+find_ingredients_task:
+  description: >
+    From a context containing several recipes with URLs and a list of available
+    ingredients, select the top 3 recipes based on taste preference first and
+    nutrition second. Then scrape each selected recipe URL (pass it as scrape_url) to extract its ingredients
+    and compare them with the current inventory. For each recipe, list only the
+    missing ingredients along with the quantity to be acquired.
+  expected_output: >
+    A markdown-formatted summary with:
+    - The names and URLs of the top 3 recipes
+    - For each recipe, a full ingredients list with "[OK]" or "[NEED MORE]" tags
+    - For "[NEED MORE]", include the shortfall in quantity clearly
+
+    Example:
+    <Recipe name> (<URL>):
+      Ingredients:
+        - <ingredient>: <amount> [OK]
+        - <ingredient>: <amount> [NEED MORE] acquire <X> more.
+  agent: choose_recipe_and_ingredients
+
 
 # reporting_task:
 #   description: >
