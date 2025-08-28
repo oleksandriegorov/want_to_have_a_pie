@@ -1,375 +1,249 @@
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Recipe Recommendations and Food Analysis</title>
+<title>Comprehensive Food Analysis and Recipe Recommendations</title>
 <style>
-  /* Reset and base */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0; padding: 0;
-    background-color: #fafafa;
+    background: #f7f9fc;
     color: #333;
-    line-height: 1.6;
   }
-  h1, h2, h3, h4 {
-    font-weight: 700;
-    margin-bottom: 0.5em;
+  header {
+    background: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
   }
-  a {
-    color: #e94e1b;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-  .container {
-    max-width: 1024px;
+  main {
+    max-width: 1100px;
     margin: 2rem auto;
     padding: 0 1rem;
   }
-  /* Section styling */
-  section {
-    margin-bottom: 3rem;
-    background: #fff;
-    border-radius: 8px;
-    padding: 1.5rem 2rem;
-    box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
+  h1, h2, h3 {
+    color: #2c3e50;
   }
-  /* Food Analysis */
-  .food-analysis-list {
+  section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem;
+  }
+  .food-analysis-list, .shopping-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
   }
-  .food-item {
-    flex: 1 1 280px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
+  .food-item, .recipe-card {
     background: #fff;
-    box-shadow: 0 1px 8px rgb(0 0 0 / 0.05);
-    transition: box-shadow 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+    padding: 1rem;
+    flex: 1 1 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  .food-item:hover {
-    box-shadow: 0 5px 15px rgb(0 0 0 / 0.15);
-  }
-  .food-item img {
-    width: 100%;
-    height: 180px;
+  .food-item img, .recipe-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
     object-fit: cover;
   }
-  .food-item-content {
-    padding: 1rem;
+  .food-item h4, .recipe-card h3 {
+    margin: 0.5rem 0;
+    text-align: center;
   }
   .confidence {
     font-weight: 600;
-    color: #2a7f62;
-    margin-top: 0.25em;
+    color: #27ae60;
   }
-  /* Recipes */
-  .recipes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .recipe-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 2px 12px rgb(0 0 0 / 0.1);
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .recipe-image {
-    flex: 1 1 320px;
-    max-height: 280px;
-    overflow: hidden;
-  }
-  .recipe-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .recipe-content {
-    flex: 2 1 520px;
-    padding: 1.5rem 2rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .recipe-title {
-    margin-top: 0;
-  }
-  .recipe-description {
-    font-style: italic;
-    color: #666;
-    margin-bottom: 1rem;
-  }
-  .ingredients-section {
-    margin-bottom: 1rem;
-  }
-  .ingredients-section h4 {
-    margin-bottom: 0.5em;
-  }
-  ul.ingredients-list {
-    list-style: none;
+  .ingredient-list {
+    list-style-type: none;
     padding-left: 0;
+    margin: 0.5rem 0 0;
   }
-  ul.ingredients-list li {
-    padding: 0.4em 0;
-    font-size: 0.95rem;
+  .ingredient-available {
+    color: #27ae60;
   }
-  .available {
-    color: #2c7a2c;
+  .ingredient-missing {
+    color: #e74c3c;
+    font-weight: 700;
+  }
+  .ingredient-needmore {
+    color: #e67e22;
+    font-weight: 700;
+  }
+  .ingredient-item {
+    margin-bottom: 0.25rem;
+  }
+  a.recipe-link {
+    display: inline-block;
+    margin: 0.5rem 0 1rem;
+    color: #2980b9;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a.recipe-link:hover {
+    text-decoration: underline;
+  }
+  .available-count, .missing-count {
     font-weight: 600;
   }
-  .missing {
-    color: #c23b22;
-    font-weight: 700;
+  .shopping-list ul {
+    padding-left: 1.25rem;
   }
-  .need-more {
-    color: #c23b22;
-    font-weight: 700;
-    font-style: italic;
-  }
-  /* Shopping List */
-  .shopping-list {
-    background: #fbf9f9;
-    border: 1px dashed #c23b22;
-    border-radius: 6px;
-    padding: 1rem;
-    font-size: 1rem;
-    color: #c23b22;
-  }
-  .shopping-list strong {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  /* Summary */
-  .summary {
-    font-size: 1.1rem;
-    line-height: 1.5;
-  }
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .recipe-card {
+  @media (max-width: 700px) {
+    .food-analysis-list, .shopping-list {
       flex-direction: column;
-    }
-    .recipe-image {
-      max-height: 200px;
-    }
-    .recipe-content {
-      flex-basis: auto;
-      padding: 1rem 1.25rem;
     }
   }
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>Food Analysis and Recipe Recommendations</h1>
-    <p>Detailed food inventory analysis and top curated recipe suggestions based on available ingredients and shopping needs.</p>
-  </header>
-
-  <section aria-labelledby="food-analysis-title">
-    <h2 id="food-analysis-title">Food Analysis</h2>
-    <div class="food-analysis-list">
-      <article class="food-item" aria-label="Fresh Watermelon Slices">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Watermelon_cross_BNC.jpg" alt="Fresh Watermelon Slices" />
-        <div class="food-item-content">
-          <h3>Fresh Watermelon Slices</h3>
-          <p>Available: 300 grams</p>
-          <p class="confidence">Confidence: 95%</p>
-        </div>
-      </article>
-      <article class="food-item" aria-label="Sweet Pastry">
-        <img src="https://cdn.pixabay.com/photo/2016/05/06/21/06/pastry-1373621_1280.jpg" alt="Sweet Pastry" />
-        <div class="food-item-content">
-          <h3>Sweet Pastry</h3>
-          <p>Available: 100 grams</p>
-          <p class="confidence">Confidence: 90%</p>
-        </div>
-      </article>
-      <article class="food-item" aria-label="Apple and Blackcurrant Fruit Puree">
-        <img src="https://cdn.pixabay.com/photo/2017/08/06/01/15/fruit-2581475_1280.jpg" alt="Apple and Blackcurrant Fruit Puree" />
-        <div class="food-item-content">
-          <h3>Apple and Blackcurrant Fruit Puree</h3>
-          <p>Available: 90 grams</p>
-          <p class="confidence">Confidence: 90%</p>
-        </div>
-      </article>
+<header>
+  <h1>Food Inventory Analysis &amp; Recipe Recommendations</h1>
+  <p>Your current pantry and fresh ingredients assessment with top recipe ideas</p>
+</header>
+<main>
+  <section id="food-analysis">
+    <h2>Food Analysis</h2>
+    <div class="food-analysis-list" aria-label="Available Food Items">
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" alt="Green Apple" />
+        <h4>Green Apple</h4>
+        <p>150 grams - <span class="confidence">Confidence: 90%</span></p>
+      </div>
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c0/Lemon-edit1.jpg" alt="Lemon" />
+        <h4>Lemon</h4>
+        <p>200 grams (two lemons combined) - <span class="confidence">Confidence: 90%</span></p>
+      </div>
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/88/Bright_red_tomato_and_cross_section02.jpg" alt="Tomato" />
+        <h4>Tomato</h4>
+        <p>200 grams - <span class="confidence">Confidence: 90%</span></p>
+      </div>
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Eggs_in_carton.jpg" alt="Raw Eggs" />
+        <h4>Raw Eggs</h4>
+        <p>100 grams (two eggs combined) - <span class="confidence">Confidence: 90%</span></p>
+      </div>
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Sour_cream_in_a_bowl.jpg" alt="Sour Cream" />
+        <h4>Sour Cream</h4>
+        <p>200 grams - <span class="confidence">Confidence: 90%</span></p>
+      </div>
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Muesli_displayed.jpg" alt="Packaged Muesli" />
+        <h4>Packaged Muesli</h4>
+        <p>750 grams - <span class="confidence">Confidence: 90%</span></p>
+      </div>
+      <div class="food-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Can_of_corn_cut_open.JPG" alt="Canned Corn" />
+        <h4>Canned Corn</h4>
+        <p>300 grams - <span class="confidence">Confidence: 90%</span></p>
+      </div>
     </div>
   </section>
 
-  <section aria-labelledby="recipe-recommendations-title">
-    <h2 id="recipe-recommendations-title">Recipe Recommendations</h2>
-    <div class="recipes-list">
+  <section id="recipes">
+    <h2>Top 3 Recipe Recommendations</h2>
 
-      <!-- Recipe 1 -->
-      <article class="recipe-card" aria-label="Sicilian Watermelon Tart - Crostata al Gelo di Anguria">
-        <div class="recipe-image">
-          <img src="https://bsstatic2.mrjack.es/wp-content/uploads/2021/05/Crostata_gelo_anguria_cab.jpg" alt="Sicilian Watermelon Tart - Crostata al Gelo di Anguria" />
-        </div>
-        <div class="recipe-content">
-          <h3 class="recipe-title">Sicilian Watermelon Tart - Crostata al Gelo di Anguria</h3>
-          <p class="recipe-description">A Sicilian tart combining crispy shortcrust pastry and a fresh watermelon filling, beautifully flavoured with cinnamon and jasmine flowers.</p>
-          <div class="ingredients-section">
-            <h4>Ingredients:</h4>
-            <ul class="ingredients-list">
-              <li><span class="need-more">Pastry/cake flour: 300 g [NEED MORE - acquire 200 g more]</span></li>
-              <li><span class="need-more">Unsalted butter, cold: 150 g [NEED MORE - acquire 150 g more]</span></li>
-              <li><span class="need-more">Large eggs: 2 [NEED MORE - acquire 2 eggs]</span></li>
-              <li><span class="need-more">Sugar: 130 g [NEED MORE - acquire 130 g more]</span></li>
-              <li><span class="need-more">Cinnamon powder: 1 tsp [NEED MORE - acquire 1 tsp]</span></li>
-              <li><span class="available">Salt: pinch [OK]</span></li>
-              <li><span class="need-more">Watermelon juice: 1.3 liters (approx 2.3 kg watermelon) [NEED MORE - have 300 g watermelon slices, insufficient]</span></li>
-              <li><span class="need-more">Sugar for filling: 260 g [NEED MORE - acquire 260 g more]</span></li>
-              <li><span class="need-more">Corn starch: 110 g [NEED MORE - acquire 110 g]</span></li>
-              <li><span class="need-more">Vanilla extract: 2 tsp [NEED MORE - acquire 2 tsp]</span></li>
-              <li><span class="need-more">Jasmine flowers (optional) [NEED MORE - acquire or omit]</span></li>
-              <li><span class="need-more">Decorations (icing sugar, chocolate nibs, crushed pistachios, edible flowers, basil leaves) [NEED MORE]</span></li>
-            </ul>
-          </div>
-          <div class="ingredients-section">
-            <h4>Available vs Missing Ingredients:</h4>
-            <ul class="ingredients-list">
-              <li><span class="available">Sweet pastry (substitute base): 100 g available, insufficient flour requires more </span></li>
-              <li><span class="missing">Butter: missing entirely [NEED MORE]</span></li>
-              <li><span class="missing">Eggs: missing entirely [NEED MORE]</span></li>
-              <li><span class="missing">Sugar & others: missing [NEED MORE]</span></li>
-              <li><span class="missing">Watermelon: partial but insufficient [NEED MORE]</span></li>
-            </ul>
-          </div>
-          <div class="ingredients-section shopping-list">
-            <strong>Shopping List & Quantities to Acquire:</strong>
-            <ul class="ingredients-list">
-              <li>Flour: 200 g</li>
-              <li>Unsalted Butter: 150 g</li>
-              <li>Eggs: 2 large</li>
-              <li>Sugar: 390 g (130 g + 260 g)</li>
-              <li>Cinnamon powder: 1 tsp</li>
-              <li>Watermelon: ~2 kg</li>
-              <li>Corn starch: 110 g</li>
-              <li>Vanilla extract: 2 tsp</li>
-              <li>Jasmine flowers (optional)</li>
-              <li>Decorations as preferred</li>
-            </ul>
-          </div>
-        </div>
-      </article>
-
-      <!-- Recipe 2 -->
-      <article class="recipe-card" aria-label="Sicilian Watermelon Tart (Gelo di Melone) - GialloZafferano Recipes">
-        <div class="recipe-image">
-          <img src="https://www.giallozafferano.com/images/257-25789/Sicilian-watermelon-tart_1200x800.jpg" alt="Sicilian Watermelon Tart (Gelo di Melone) - GialloZafferano" />
-        </div>
-        <div class="recipe-content">
-          <h3 class="recipe-title">Sicilian Watermelon Tart (Gelo di Melone) - GialloZafferano</h3>
-          <p class="recipe-description">A light and sweet Italian tart using shortcrust dough filled with fresh watermelon jelly stabilized with cornstarch and finished with chocolate chips.</p>
-          <div class="ingredients-section">
-            <h4>Ingredients:</h4>
-            <ul class="ingredients-list">
-              <li><span class="need-more">Type 00 flour (shortcrust flour): 250 g [NEED MORE - acquire 150 g more]</span></li>
-              <li><span class="need-more">Cold butter: 90 g [NEED MORE - acquire 90 g]</span></li>
-              <li><span class="need-more">Powdered sugar: 50 g [NEED MORE - acquire 50 g]</span></li>
-              <li><span class="need-more">Egg: 1 medium (55 g) [NEED MORE - acquire 1 egg]</span></li>
-              <li><span class="need-more">Vanilla extract: 1 tsp [NEED MORE]</span></li>
-              <li><span class="available">Fine salt: pinch [OK]</span></li>
-              <li><span class="need-more">Watermelon, cleaned: 1 kg [NEED MORE - acquire more watermelon]</span></li>
-              <li><span class="need-more">Sugar for filling: 200 g [NEED MORE]</span></li>
-              <li><span class="need-more">Corn starch: 70 g [NEED MORE]</span></li>
-              <li><span class="need-more">Dark chocolate chips: optional garnish [NEED MORE]</span></li>
-            </ul>
-          </div>
-          <div class="ingredients-section">
-            <h4>Available vs Missing Ingredients:</h4>
-            <ul class="ingredients-list">
-              <li><span class="available">Sweet pastry base (100 g available), shortfall in flour & butter</span></li>
-              <li><span class="missing">Butter: none available</span></li>
-              <li><span class="missing">Eggs: none available</span></li>
-              <li><span class="missing">Watermelon: 300 g available, need ~700 g more</span></li>
-              <li><span class="missing">Sugar, corn starch, vanilla, chocolate: all needed</span></li>
-            </ul>
-          </div>
-          <div class="ingredients-section shopping-list">
-            <strong>Shopping List & Quantities to Acquire:</strong>
-            <ul class="ingredients-list">
-              <li>Flour: 150 g</li>
-              <li>Cold Butter: 90 g</li>
-              <li>Powdered sugar: 50 g</li>
-              <li>Egg: 1 medium</li>
-              <li>Vanilla extract: 1 tsp</li>
-              <li>Watermelon: 700 g (additional)</li>
-              <li>Sugar for filling: 200 g</li>
-              <li>Corn starch: 70 g</li>
-              <li>Dark chocolate chips (optional)</li>
-            </ul>
-          </div>
-        </div>
-      </article>
-
-      <!-- Recipe 3 -->
-      <article class="recipe-card" aria-label="Sicilian Watermelon Pudding (Gelo di Melone) - Food Nouveau">
-        <div class="recipe-image">
-          <img src="https://foodnouveau.com/wp-content/uploads/2016/12/IMG_4541_2023_1290px.jpg" alt="Sicilian Watermelon Pudding (Gelo di Melone)" />
-        </div>
-        <div class="recipe-content">
-          <h3 class="recipe-title">Sicilian Watermelon Pudding (Gelo di Melone) - Food Nouveau</h3>
-          <p class="recipe-description">A light and elegant watermelon pudding from Sicily with a silky texture, infused with vanilla and finished with lemon juice and optional whipped cream and pistachios.</p>
-          <div class="ingredients-section">
-            <h4>Ingredients:</h4>
-            <ul class="ingredients-list">
-              <li><span class="need-more">Watermelon, coarsely chopped, seeded: ~600 g [NEED MORE - only 300 g available]</span></li>
-              <li><span class="need-more">Corn starch: 2 tbsp (~16 g) [NEED MORE]</span></li>
-              <li><span class="need-more">Granulated sugar: ¼ cup (50 g) [NEED MORE]</span></li>
-              <li><span class="need-more">Vanilla bean seeds or paste: ½ vanilla bean or 2 tsp paste [NEED MORE]</span></li>
-              <li><span class="need-more">Freshly squeezed lemon juice: 2 tsp [NEED MORE]</span></li>
-              <li><span class="need-more">Optional: whipped cream and unsalted pistachios [NEED MORE]</span></li>
-            </ul>
-          </div>
-          <div class="ingredients-section">
-            <h4>Available vs Missing Ingredients:</h4>
-            <ul class="ingredients-list">
-              <li><span class="available">Watermelon: 300 g available (50% approx for this recipe)</span></li>
-              <li><span class="missing">Corn starch, sugar, vanilla, lemon juice, toppings missing [NEED MORE]</span></li>
-            </ul>
-          </div>
-          <div class="ingredients-section shopping-list">
-            <strong>Shopping List & Quantities to Acquire:</strong>
-            <ul class="ingredients-list">
-              <li>Watermelon: ~300 g (to complete 600 g total)</li>
-              <li>Corn starch: 16 g</li>
-              <li>Granulated sugar: 50 g</li>
-              <li>Vanilla bean seeds or paste: ½ bean or 2 tsp paste</li>
-              <li>Fresh lemon juice: 2 tsp</li>
-              <li>Optional whipped cream and pistachios</li>
-            </ul>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <section aria-labelledby="summary-title">
-    <h2 id="summary-title">Summary and Recommendations</h2>
-    <div class="summary">
-      <p>Based on your current food inventory and the analysis of the top three permissible watermelon-based recipes, a significant number of ingredients are missing or insufficient to fully prepare any of the recipes. The available fresh watermelon slices (300 g), sweet pastry (100 g), and fruit puree (90 g) provide a good start but are inadequate for full preparation.</p>
-      <p>Primary shopping needs include additional fresh watermelon (up to 2 kg depending on recipe), sugars, corn starch, eggs, butter, and vanilla extracts. Buying these will allow you to prepare any of the recommended Sicilian watermelon desserts, which emphasize fresh, summery flavors and elegant textures.</p>
-      <p>Recommendations:</p>
-      <ul>
-        <li>Prioritize fresh watermelon acquisition to match recipe requirements.</li>
-        <li>Purchase staples such as eggs, butter, sugar, and corn starch to support the pastry and filling components.</li>
-        <li>Consider flavor enhancers like vanilla extract and garnishes such as pistachios and jasmine flowers for an elevated presentation.</li>
-        <li>Review quantities carefully to avoid shortfall; where only partial ingredients exist, plan to acquire the difference.</li>
+    <article class="recipe-card" aria-labelledby="recipe1-title">
+      <img src="https://whiteonricecouple.com/recipe/images/baked-eggs-in-tomato-sauce-Featured-295.jpg" alt="Poached Eggs in Tomato Sauce on Toast (Shakshuka)" class="recipe-img" />
+      <h3 id="recipe1-title">Poached Eggs in Tomato Sauce on Toast (Shakshuka)</h3>
+      <a class="recipe-link" href="https://whiteonricecouple.com/poached-eggs-tomato-sauce-toast/" target="_blank" rel="noopener noreferrer">Recipe Source</a>
+      <p>A hearty and flavorful dish of eggs poached in a spiced tomato sauce, perfect for breakfast, brunch or dinner, served with grilled bread.</p>
+      <h4>Ingredients and Inventory Status:</h4>
+      <ul class="ingredient-list" aria-label="Ingredients for Shakshuka">
+        <li class="ingredient-item ingredient-needmore">Crushed tomatoes or tomato sauce: 28 oz (794g) - Need ~594g more</li>
+        <li class="ingredient-item ingredient-needmore">Large eggs: 6 eggs (~300g) - Need ~4 eggs (~200g) more</li>
+        <li class="ingredient-item ingredient-needmore">Butter: 3 Tbsp (45g) - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Small onion, minced: 1 - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Garlic cloves, minced: 3 - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Worcestershire sauce: 1 Tbsp (15ml) - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Ground cumin: 1 tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Smoked paprika: ½ tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-available">Salt: ½ tsp - Available (pantry staple)</li>
+        <li class="ingredient-item ingredient-available">Sugar: ½ tsp - Available (pantry staple)</li>
+        <li class="ingredient-item ingredient-needmore">Chopped parsley: ¼ cup - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Grilled bread or toast - Need full amount</li>
       </ul>
-      <p>Once ingredients are fully available, all three recipes provide refreshing, authentic Sicilian summer desserts ideal for warm seasons or festive occasions.</p>
-    </div>
+    </article>
+
+    <article class="recipe-card" aria-labelledby="recipe2-title">
+      <img src="http://static1.squarespace.com/static/5accfbda7c93273e08da09bf/5acd00900e2e72f4e513ca49/64ccd4548d37801cd65786cb/1695981486292/62C6CA21-0CAA-4981-A6B3-A2DEADD0BECA.jpg?format=1500w" alt="Chinese Scrambled Eggs with Tomatoes" class="recipe-img" />
+      <h3 id="recipe2-title">Chinese Scrambled Eggs with Tomatoes</h3>
+      <a class="recipe-link" href="https://foodwastefeast.com/recipes/2023/8/4/chinese-scrambled-eggs-with-tomatoes" target="_blank" rel="noopener noreferrer">Recipe Source</a>
+      <p>A quick and comforting Chinese home-style stir-fry of scrambled eggs combined with sweet and tangy tomatoes.</p>
+      <h4>Ingredients and Inventory Status:</h4>
+      <ul class="ingredient-list" aria-label="Ingredients for Chinese Scrambled Eggs with Tomatoes">
+        <li class="ingredient-item ingredient-needmore">Eggs: 6 eggs (~300g) - Need ~4 eggs (~200g) more</li>
+        <li class="ingredient-item ingredient-needmore">Toasted sesame oil: 1 tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-available">Kosher salt - Available (pantry staple)</li>
+        <li class="ingredient-item ingredient-needmore">Neutral oil (vegetable): 2 Tbsp + more - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Garlic clove, minced: 1 - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Fresh ginger, minced: ½ inch piece - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Large tomatoes, cut into chunks: 2 (~300g) - Need ~100g more</li>
+        <li class="ingredient-item ingredient-needmore">Rice or white vinegar: 1 tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-available">Sugar - Available (pantry staple)</li>
+        <li class="ingredient-item ingredient-needmore">Ground white pepper: pinch (optional) - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Scallions, thinly sliced: 2 - Need full amount</li>
+      </ul>
+    </article>
+
+    <article class="recipe-card" aria-labelledby="recipe3-title">
+      <img src="https://thewoksoflife.com/wp-content/uploads/2019/05/tomato-egg-11.jpg" alt="Chinese Tomato Egg Stir-fry" class="recipe-img" />
+      <h3 id="recipe3-title">Chinese Tomato Egg Stir-fry (番茄炒鸡蛋)</h3>
+      <a class="recipe-link" href="https://thewoksoflife.com/stir-fried-tomato-and-egg/" target="_blank" rel="noopener noreferrer">Recipe Source</a>
+      <p>A beloved Chinese comfort food staple combining stir-fried tomatoes and eggs seasoned with sesame oil and Shaoxing wine.</p>
+      <h4>Ingredients and Inventory Status:</h4>
+      <ul class="ingredient-list" aria-label="Ingredients for Chinese Tomato Egg Stir-fry">
+        <li class="ingredient-item ingredient-needmore">Small to medium tomatoes: 4 (~500g) - Need 300g more</li>
+        <li class="ingredient-item ingredient-needmore">Scallion: 1 - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Eggs: 4 eggs (~200g) - Need 2 eggs (~100g) more</li>
+        <li class="ingredient-item ingredient-available">Salt: ¾ tsp - Available (pantry staple)</li>
+        <li class="ingredient-item ingredient-needmore">White pepper: ¼ tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Sesame oil: ½ tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Shaoxing rice wine: 1 tsp - Need full amount</li>
+        <li class="ingredient-item ingredient-needmore">Vegetable oil: 3 Tbsp - Need full amount</li>
+        <li class="ingredient-item ingredient-available">Sugar: 2 tsp - Available (pantry staple)</li>
+        <li class="ingredient-item ingredient-available">Water: ¼ to ½ cup - Available</li>
+      </ul>
+    </article>
   </section>
-</div>
+
+  <section id="summary">
+    <h2>Summary and Recommendations</h2>
+    <p>After analyzing your inventory and top 3 recipes, none can be fully prepared with your current stock. Your available ingredients include tomatoes (200g), eggs (100g), sour cream, canned corn, muesli, lemon, and green apple. However, key ingredients such as additional eggs, various oils, spices, onions, garlic, butter, and bread are missing.</p>
+    <h3>Comprehensive Grocery List for Top Recipes:</h3>
+    <ul class="shopping-list" aria-label="Shopping list for recipe ingredients">
+      <li>6 eggs (~300g) to cover all recipes</li>
+      <li>Approx. 300g fresh tomatoes plus ~594g crushed or sauce form tomatoes (can substitute fresh)</li>
+      <li>Butter (45g)</li>
+      <li>1 small onion</li>
+      <li>At least 4 garlic cloves</li>
+      <li>Worcestershire sauce (15ml)</li>
+      <li>Ground cumin (1 tsp)</li>
+      <li>Smoked paprika (½ tsp)</li>
+      <li>Fresh parsley (¼ cup chopped)</li>
+      <li>Bread or toast (sufficient for 4 servings)</li>
+      <li>Toasted sesame oil (total 1.5 tsp)</li>
+      <li>Neutral/vegetable oil (approx. 5 tbsp)</li>
+      <li>Fresh ginger (½ inch piece)</li>
+      <li>Rice or white vinegar (1 tsp)</li>
+      <li>White pepper (small quantity)</li>
+      <li>Scallions (3 total)</li>
+      <li>Shaoxing wine or dry sherry/mirin (1 tsp)</li>
+    </ul>
+    <p>This shopping list will enable you to prepare all three recommended dishes, maximizing taste, nutrition, and culinary variety.</p>
+  </section>
+</main>
 </body>
 </html>
+```

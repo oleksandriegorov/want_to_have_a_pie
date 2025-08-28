@@ -19,7 +19,8 @@ def run():
     Run the crew.
     """
     inputs = {
-        "image_fs_location": "/Users/oleksandriegorov/Documents/Agentic_AI/Meetup_August28/want_to_have_a_pie/images/IMG_4540.jpg",
+        #"image_fs_location": "/Users/oleksandriegorov/Documents/Agentic_AI/Meetup_August28/want_to_have_a_pie/images/IMG_4540.jpg",
+        "image_fs_location": "/Users/oleksandriegorov/Documents/Agentic_AI/Meetup_August28/want_to_have_a_pie/images/food_next_option.jpg",
     }
 
     try:
