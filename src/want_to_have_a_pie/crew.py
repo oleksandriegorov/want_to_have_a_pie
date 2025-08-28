@@ -12,10 +12,8 @@ from crewai_tools import FirecrawlScrapeWebsiteTool
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
-os.environ["SERPER_API_KEY"] = (
-    "6225536b3c03c6e8084b903906c5bfb3d78d6be8"  # serper.dev API key
-)
-os.environ["FIRECRAWL_API_KEY"] = "fc-05084f080afb43d3aff255a0e0a9fc83"
+os.environ["SERPER_API_KEY"] = "XXXXXXXXXXXX"  # serper.dev API key
+os.environ["FIRECRAWL_API_KEY"] = "YYYYYYYYY"
 
 # Initialize the Firecrawl tool without a specific URL
 # This allows the agent to scrape any URL provided in the task context
@@ -74,7 +72,7 @@ class WantToHaveAPie:
             verbose=True,
             tools=[scrape_tool],  # Add our custom vision tool
             llm="gpt-4.1-mini",  # Use vision-capable model
-            max_iter=3
+            max_iter=3,
         )
 
     @agent
@@ -119,7 +117,7 @@ class WantToHaveAPie:
     def html_format_task(self) -> Task:
         return Task(
             config=self.tasks_config["html_format_task"],  # type: ignore[index]
-            output_file='recipe_recommendations.html'
+            output_file="recipe_recommendations.html",
         )
 
     # @task
