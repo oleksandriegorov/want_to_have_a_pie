@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipe Recommendations and Food Analysis</title>
+<style>
+  /* Reset and base */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    background-color: #fafafa;
+    color: #333;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 {
+    font-weight: 700;
+    margin-bottom: 0.5em;
+  }
+  a {
+    color: #e94e1b;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .container {
+    max-width: 1024px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  /* Section styling */
+  section {
+    margin-bottom: 3rem;
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
+  }
+  /* Food Analysis */
+  .food-analysis-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .food-item {
+    flex: 1 1 280px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 8px rgb(0 0 0 / 0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  .food-item:hover {
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.15);
+  }
+  .food-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  .food-item-content {
+    padding: 1rem;
+  }
+  .confidence {
+    font-weight: 600;
+    color: #2a7f62;
+    margin-top: 0.25em;
+  }
+  /* Recipes */
+  .recipes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .recipe-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .recipe-image {
+    flex: 1 1 320px;
+    max-height: 280px;
+    overflow: hidden;
+  }
+  .recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .recipe-content {
+    flex: 2 1 520px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .recipe-title {
+    margin-top: 0;
+  }
+  .recipe-description {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 1rem;
+  }
+  .ingredients-section {
+    margin-bottom: 1rem;
+  }
+  .ingredients-section h4 {
+    margin-bottom: 0.5em;
+  }
+  ul.ingredients-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  ul.ingredients-list li {
+    padding: 0.4em 0;
+    font-size: 0.95rem;
+  }
+  .available {
+    color: #2c7a2c;
+    font-weight: 600;
+  }
+  .missing {
+    color: #c23b22;
+    font-weight: 700;
+  }
+  .need-more {
+    color: #c23b22;
+    font-weight: 700;
+    font-style: italic;
+  }
+  /* Shopping List */
+  .shopping-list {
+    background: #fbf9f9;
+    border: 1px dashed #c23b22;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 1rem;
+    color: #c23b22;
+  }
+  .shopping-list strong {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  /* Summary */
+  .summary {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .recipe-card {
+      flex-direction: column;
+    }
+    .recipe-image {
+      max-height: 200px;
+    }
+    .recipe-content {
+      flex-basis: auto;
+      padding: 1rem 1.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Food Analysis and Recipe Recommendations</h1>
+    <p>Detailed food inventory analysis and top curated recipe suggestions based on available ingredients and shopping needs.</p>
+  </header>
+
+  <section aria-labelledby="food-analysis-title">
+    <h2 id="food-analysis-title">Food Analysis</h2>
+    <div class="food-analysis-list">
+      <article class="food-item" aria-label="Fresh Watermelon Slices">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Watermelon_cross_BNC.jpg" alt="Fresh Watermelon Slices" />
+        <div class="food-item-content">
+          <h3>Fresh Watermelon Slices</h3>
+          <p>Available: 300 grams</p>
+          <p class="confidence">Confidence: 95%</p>
+        </div>
+      </article>
+      <article class="food-item" aria-label="Sweet Pastry">
+        <img src="https://cdn.pixabay.com/photo/2016/05/06/21/06/pastry-1373621_1280.jpg" alt="Sweet Pastry" />
+        <div class="food-item-content">
+          <h3>Sweet Pastry</h3>
+          <p>Available: 100 grams</p>
+          <p class="confidence">Confidence: 90%</p>
+        </div>
+      </article>
+      <article class="food-item" aria-label="Apple and Blackcurrant Fruit Puree">
+        <img src="https://cdn.pixabay.com/photo/2017/08/06/01/15/fruit-2581475_1280.jpg" alt="Apple and Blackcurrant Fruit Puree" />
+        <div class="food-item-content">
+          <h3>Apple and Blackcurrant Fruit Puree</h3>
+          <p>Available: 90 grams</p>
+          <p class="confidence">Confidence: 90%</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="recipe-recommendations-title">
+    <h2 id="recipe-recommendations-title">Recipe Recommendations</h2>
+    <div class="recipes-list">
+
+      <!-- Recipe 1 -->
+      <article class="recipe-card" aria-label="Sicilian Watermelon Tart - Crostata al Gelo di Anguria">
+        <div class="recipe-image">
+          <img src="https://bsstatic2.mrjack.es/wp-content/uploads/2021/05/Crostata_gelo_anguria_cab.jpg" alt="Sicilian Watermelon Tart - Crostata al Gelo di Anguria" />
+        </div>
+        <div class="recipe-content">
+          <h3 class="recipe-title">Sicilian Watermelon Tart - Crostata al Gelo di Anguria</h3>
+          <p class="recipe-description">A Sicilian tart combining crispy shortcrust pastry and a fresh watermelon filling, beautifully flavoured with cinnamon and jasmine flowers.</p>
+          <div class="ingredients-section">
+            <h4>Ingredients:</h4>
+            <ul class="ingredients-list">
+              <li><span class="need-more">Pastry/cake flour: 300 g [NEED MORE - acquire 200 g more]</span></li>
+              <li><span class="need-more">Unsalted butter, cold: 150 g [NEED MORE - acquire 150 g more]</span></li>
+              <li><span class="need-more">Large eggs: 2 [NEED MORE - acquire 2 eggs]</span></li>
+              <li><span class="need-more">Sugar: 130 g [NEED MORE - acquire 130 g more]</span></li>
+              <li><span class="need-more">Cinnamon powder: 1 tsp [NEED MORE - acquire 1 tsp]</span></li>
+              <li><span class="available">Salt: pinch [OK]</span></li>
+              <li><span class="need-more">Watermelon juice: 1.3 liters (approx 2.3 kg watermelon) [NEED MORE - have 300 g watermelon slices, insufficient]</span></li>
+              <li><span class="need-more">Sugar for filling: 260 g [NEED MORE - acquire 260 g more]</span></li>
+              <li><span class="need-more">Corn starch: 110 g [NEED MORE - acquire 110 g]</span></li>
+              <li><span class="need-more">Vanilla extract: 2 tsp [NEED MORE - acquire 2 tsp]</span></li>
+              <li><span class="need-more">Jasmine flowers (optional) [NEED MORE - acquire or omit]</span></li>
+              <li><span class="need-more">Decorations (icing sugar, chocolate nibs, crushed pistachios, edible flowers, basil leaves) [NEED MORE]</span></li>
+            </ul>
+          </div>
+          <div class="ingredients-section">
+            <h4>Available vs Missing Ingredients:</h4>
+            <ul class="ingredients-list">
+              <li><span class="available">Sweet pastry (substitute base): 100 g available, insufficient flour requires more </span></li>
+              <li><span class="missing">Butter: missing entirely [NEED MORE]</span></li>
+              <li><span class="missing">Eggs: missing entirely [NEED MORE]</span></li>
+              <li><span class="missing">Sugar & others: missing [NEED MORE]</span></li>
+              <li><span class="missing">Watermelon: partial but insufficient [NEED MORE]</span></li>
+            </ul>
+          </div>
+          <div class="ingredients-section shopping-list">
+            <strong>Shopping List & Quantities to Acquire:</strong>
+            <ul class="ingredients-list">
+              <li>Flour: 200 g</li>
+              <li>Unsalted Butter: 150 g</li>
+              <li>Eggs: 2 large</li>
+              <li>Sugar: 390 g (130 g + 260 g)</li>
+              <li>Cinnamon powder: 1 tsp</li>
+              <li>Watermelon: ~2 kg</li>
+              <li>Corn starch: 110 g</li>
+              <li>Vanilla extract: 2 tsp</li>
+              <li>Jasmine flowers (optional)</li>
+              <li>Decorations as preferred</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- Recipe 2 -->
+      <article class="recipe-card" aria-label="Sicilian Watermelon Tart (Gelo di Melone) - GialloZafferano Recipes">
+        <div class="recipe-image">
+          <img src="https://www.giallozafferano.com/images/257-25789/Sicilian-watermelon-tart_1200x800.jpg" alt="Sicilian Watermelon Tart (Gelo di Melone) - GialloZafferano" />
+        </div>
+        <div class="recipe-content">
+          <h3 class="recipe-title">Sicilian Watermelon Tart (Gelo di Melone) - GialloZafferano</h3>
+          <p class="recipe-description">A light and sweet Italian tart using shortcrust dough filled with fresh watermelon jelly stabilized with cornstarch and finished with chocolate chips.</p>
+          <div class="ingredients-section">
+            <h4>Ingredients:</h4>
+            <ul class="ingredients-list">
+              <li><span class="need-more">Type 00 flour (shortcrust flour): 250 g [NEED MORE - acquire 150 g more]</span></li>
+              <li><span class="need-more">Cold butter: 90 g [NEED MORE - acquire 90 g]</span></li>
+              <li><span class="need-more">Powdered sugar: 50 g [NEED MORE - acquire 50 g]</span></li>
+              <li><span class="need-more">Egg: 1 medium (55 g) [NEED MORE - acquire 1 egg]</span></li>
+              <li><span class="need-more">Vanilla extract: 1 tsp [NEED MORE]</span></li>
+              <li><span class="available">Fine salt: pinch [OK]</span></li>
+              <li><span class="need-more">Watermelon, cleaned: 1 kg [NEED MORE - acquire more watermelon]</span></li>
+              <li><span class="need-more">Sugar for filling: 200 g [NEED MORE]</span></li>
+              <li><span class="need-more">Corn starch: 70 g [NEED MORE]</span></li>
+              <li><span class="need-more">Dark chocolate chips: optional garnish [NEED MORE]</span></li>
+            </ul>
+          </div>
+          <div class="ingredients-section">
+            <h4>Available vs Missing Ingredients:</h4>
+            <ul class="ingredients-list">
+              <li><span class="available">Sweet pastry base (100 g available), shortfall in flour & butter</span></li>
+              <li><span class="missing">Butter: none available</span></li>
+              <li><span class="missing">Eggs: none available</span></li>
+              <li><span class="missing">Watermelon: 300 g available, need ~700 g more</span></li>
+              <li><span class="missing">Sugar, corn starch, vanilla, chocolate: all needed</span></li>
+            </ul>
+          </div>
+          <div class="ingredients-section shopping-list">
+            <strong>Shopping List & Quantities to Acquire:</strong>
+            <ul class="ingredients-list">
+              <li>Flour: 150 g</li>
+              <li>Cold Butter: 90 g</li>
+              <li>Powdered sugar: 50 g</li>
+              <li>Egg: 1 medium</li>
+              <li>Vanilla extract: 1 tsp</li>
+              <li>Watermelon: 700 g (additional)</li>
+              <li>Sugar for filling: 200 g</li>
+              <li>Corn starch: 70 g</li>
+              <li>Dark chocolate chips (optional)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- Recipe 3 -->
+      <article class="recipe-card" aria-label="Sicilian Watermelon Pudding (Gelo di Melone) - Food Nouveau">
+        <div class="recipe-image">
+          <img src="https://foodnouveau.com/wp-content/uploads/2016/12/IMG_4541_2023_1290px.jpg" alt="Sicilian Watermelon Pudding (Gelo di Melone)" />
+        </div>
+        <div class="recipe-content">
+          <h3 class="recipe-title">Sicilian Watermelon Pudding (Gelo di Melone) - Food Nouveau</h3>
+          <p class="recipe-description">A light and elegant watermelon pudding from Sicily with a silky texture, infused with vanilla and finished with lemon juice and optional whipped cream and pistachios.</p>
+          <div class="ingredients-section">
+            <h4>Ingredients:</h4>
+            <ul class="ingredients-list">
+              <li><span class="need-more">Watermelon, coarsely chopped, seeded: ~600 g [NEED MORE - only 300 g available]</span></li>
+              <li><span class="need-more">Corn starch: 2 tbsp (~16 g) [NEED MORE]</span></li>
+              <li><span class="need-more">Granulated sugar: ¼ cup (50 g) [NEED MORE]</span></li>
+              <li><span class="need-more">Vanilla bean seeds or paste: ½ vanilla bean or 2 tsp paste [NEED MORE]</span></li>
+              <li><span class="need-more">Freshly squeezed lemon juice: 2 tsp [NEED MORE]</span></li>
+              <li><span class="need-more">Optional: whipped cream and unsalted pistachios [NEED MORE]</span></li>
+            </ul>
+          </div>
+          <div class="ingredients-section">
+            <h4>Available vs Missing Ingredients:</h4>
+            <ul class="ingredients-list">
+              <li><span class="available">Watermelon: 300 g available (50% approx for this recipe)</span></li>
+              <li><span class="missing">Corn starch, sugar, vanilla, lemon juice, toppings missing [NEED MORE]</span></li>
+            </ul>
+          </div>
+          <div class="ingredients-section shopping-list">
+            <strong>Shopping List & Quantities to Acquire:</strong>
+            <ul class="ingredients-list">
+              <li>Watermelon: ~300 g (to complete 600 g total)</li>
+              <li>Corn starch: 16 g</li>
+              <li>Granulated sugar: 50 g</li>
+              <li>Vanilla bean seeds or paste: ½ bean or 2 tsp paste</li>
+              <li>Fresh lemon juice: 2 tsp</li>
+              <li>Optional whipped cream and pistachios</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="summary-title">
+    <h2 id="summary-title">Summary and Recommendations</h2>
+    <div class="summary">
+      <p>Based on your current food inventory and the analysis of the top three permissible watermelon-based recipes, a significant number of ingredients are missing or insufficient to fully prepare any of the recipes. The available fresh watermelon slices (300 g), sweet pastry (100 g), and fruit puree (90 g) provide a good start but are inadequate for full preparation.</p>
+      <p>Primary shopping needs include additional fresh watermelon (up to 2 kg depending on recipe), sugars, corn starch, eggs, butter, and vanilla extracts. Buying these will allow you to prepare any of the recommended Sicilian watermelon desserts, which emphasize fresh, summery flavors and elegant textures.</p>
+      <p>Recommendations:</p>
+      <ul>
+        <li>Prioritize fresh watermelon acquisition to match recipe requirements.</li>
+        <li>Purchase staples such as eggs, butter, sugar, and corn starch to support the pastry and filling components.</li>
+        <li>Consider flavor enhancers like vanilla extract and garnishes such as pistachios and jasmine flowers for an elevated presentation.</li>
+        <li>Review quantities carefully to avoid shortfall; where only partial ingredients exist, plan to acquire the difference.</li>
+      </ul>
+      <p>Once ingredients are fully available, all three recipes provide refreshing, authentic Sicilian summer desserts ideal for warm seasons or festive occasions.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>
